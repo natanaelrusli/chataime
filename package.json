@@ -1,5 +1,5 @@
 {
-  "name": "askthiswebsite",
+  "name": "chataime",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,7 @@
     "framer-motion": "^12.4.2",
     "lucide-react": "^0.475.0",
     "next": "14.2.23",
+    "openai": "^4.83.0",
     "react": "^18",
     "react-dom": "^18",
     "shadcn": "^2.3.0",

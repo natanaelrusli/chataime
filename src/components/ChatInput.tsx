@@ -46,10 +46,10 @@ const ChatInput = ({
 
               <Button
                 size='sm'
-                type='submit'
                 className='absolute z-10 border border-border bg-zinc-900 right-2 bottom-2'
+                onClick={handleSubmit}
               >
-                <Send className='size-4' />
+                <Send className='size-4 text-white' />
               </Button>
             </form>
           </div>

@@ -32,7 +32,9 @@ const Message = ({ content, isUserMessage }: MessageProps) => {
               <span className='text-sm font-semibold text-white'>
                 {isUserMessage ? "You" : "Website"}
               </span>
-              <p className='text-sm font-normal py-2.5 text-white'>{content}</p>
+              <p className='text-sm font-normal py-2.5 text-white text-wrap'>
+                {content}
+              </p>
             </div>
           </div>
         </div>

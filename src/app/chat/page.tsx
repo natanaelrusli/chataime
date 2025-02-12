@@ -7,21 +7,7 @@ export const metadata: Metadata = {
 };
 
 const Page = async () => {
-  return (
-    <ChatWrapper
-      initialMessages={[
-        {
-          role: "user",
-          content: "WOW",
-        },
-        {
-          role: "bot",
-          content: "Hello",
-        },
-      ]}
-      sessionId={"sessionId"}
-    />
-  );
+  return <ChatWrapper initialMessages={[]} sessionId={"sessionId"} />;
 };
 
 export default Page;

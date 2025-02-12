@@ -1,7 +1,7 @@
 import React from "react";
 import Message from "./Message";
 import { MessageSquare } from "lucide-react";
-import { Message as TMessage } from "./ChatWrapper";
+import { Message as TMessage } from "@/type";
 
 type MessagesProps = {
   messages: TMessage[];

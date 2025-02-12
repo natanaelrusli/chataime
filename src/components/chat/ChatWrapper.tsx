@@ -18,6 +18,7 @@ const ChatWrapper = ({
 }) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState<string>("");
+  const [currentModel, setCurrentModel] = useState<string>("deepdeek-r1");
 
   const handleInputChange = (
     e:
@@ -28,6 +29,8 @@ const ChatWrapper = ({
   };
 
   const handleSubmit = async () => {
+    if (!input) return;
+
     const newMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
@@ -107,7 +110,7 @@ const ChatWrapper = ({
         <div>
           <Button size='sm' variant='solid' className='bg-zinc-500 text-white'>
             <BotIcon className='size-5 flex items-center' />
-            Change Model
+            { currentModel }
           </Button>
         </div>
       </div>

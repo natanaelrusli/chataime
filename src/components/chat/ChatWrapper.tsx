@@ -10,6 +10,12 @@ import {Button} from "@heroui/react";
 import {BotIcon, ChevronDown, Copy} from "lucide-react";
 import {UserButton} from "@clerk/nextjs";
 
+enum Status {
+  Idle = 'idle',
+  Loading = 'loading',
+  Error = 'error',
+}
+
 const ChatWrapper = ({sessionId, initialMessages, fullName}: {
   sessionId: string;
   initialMessages: Message[];
@@ -19,6 +25,7 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
   const [input, setInput] = useState<string>("");
   const [currentModel, setCurrentModel] = useState<string>("deepdeek-r1");
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false);
+  const [status, setStatus] = useState<Status>(Status.Idle);
 
   const options = {
     root: document.querySelector("#scrollArea"),
@@ -61,6 +68,8 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
     setInput("");
 
     try {
+      setStatus(Status.Loading)
+      
       const res = await fetch("http://localhost:9090/api/chat", {
         method: "POST",
         headers: {
@@ -72,6 +81,8 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
           messages: [newMessage],
         }),
       });
+
+      setStatus(Status.Idle)
 
       if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
       if (!res.body) throw new Error("No response body received.");
@@ -121,7 +132,10 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
         }
       }
     } catch (error) {
+      setStatus(Status.Error);
       console.error("Failed to send message:", error);
+    } finally {
+      setStatus(Status.Idle)
     }
   };
 
@@ -155,7 +169,7 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
       {/* Header end */}
 
       <div className='relative flex-1 text-white bg-zinc-800 justify-between flex flex-col'>
-        <Messages messages={messages}/>
+        <Messages loading={status === Status.Loading} messages={messages}/>
         {
           showScrollToBottom && (
             <Button

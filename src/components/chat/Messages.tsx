@@ -2,21 +2,25 @@ import React from "react";
 import Message from "./Message";
 import {MessageSquare} from "lucide-react";
 import {Message as TMessage} from "@/type";
+import {Spinner} from "@heroui/react";
 
 type MessagesProps = {
   messages: TMessage[];
+  loading?: boolean;
 };
 
-const Messages = ({messages}: MessagesProps) => {
+const Messages = ({messages, loading}: MessagesProps) => {
   return (
     <div className='relative flex max-h-[calc(100vh-3.5rem-7rem)] flex-1 flex-col overflow-y-auto pb-10 xl:pb-12'>
       {messages.length ? (
         messages.map((message, i) => (
-          <Message
-            key={i}
-            content={message.content}
-            isUserMessage={message.role === "user"}
-          />
+          <>
+            <Message
+              key={i}
+              content={message.content}
+              isUserMessage={message.role === "user"}
+            />
+          </>
         ))
       ) : (
         <div className='flex-1 flex flex-col items-center justify-center gap-2'>
@@ -27,6 +31,7 @@ const Messages = ({messages}: MessagesProps) => {
           </p>
         </div>
       )}
+      {loading && <Spinner/>}
       <div id='messages-bottom'/>
     </div>
   );

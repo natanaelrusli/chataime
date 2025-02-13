@@ -1,13 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+const isProtectedRoute = createRouteMatcher(["/chat"]);
+const isLoginRoute = createRouteMatcher(["/login"]);
 
-  const cookie = req.cookies.get("sessionId");
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth();
 
-  if (!cookie) {
-    res.cookies.set("sessionId", crypto.randomUUID());
+  // Redirect unauthenticated users to /login
+  if (isProtectedRoute(req) && !userId) {
+    const loginUrl = new URL("/login", req.nextUrl.origin);
+    loginUrl.searchParams.set("redirect_url", req.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl, 307);
   }
 
-  return res;
-}
+  // Redirect logged-in users away from /login to their previous page or /
+  if (isLoginRoute(req) && userId) {
+    const referer = req.headers.get("referer") || "/";
+    return NextResponse.redirect(new URL(referer, req.nextUrl.origin), 307);
+  }
+
+  return NextResponse.next(); // Continue as normal if no redirect is needed
+});
+
+export const config = {
+  matcher: [
+    "/((?!_next|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
+};

@@ -7,14 +7,17 @@ import { cleanContent } from "@/lib/utils";
 import { Message } from "@/type";
 import { RoleEnum } from "@/types/enums";
 import { Button } from "@heroui/react";
-import { BotIcon } from "lucide-react";
+import {BotIcon, Copy} from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 const ChatWrapper = ({
   sessionId,
   initialMessages,
+  fullName,
 }: {
   sessionId: string;
   initialMessages: Message[];
+  fullName: string;
 }) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState<string>("");
@@ -103,14 +106,26 @@ const ChatWrapper = ({
   return (
     <div className='relative min-h-full bg-zinc-900 flex divide-y divide-zinc-700 flex-col justify-between gap-2'>
       <div className='w-full py-4 px-14 flex items-center justify-between font-bold h-full mt-1'>
-        <div>
-          <p className='text-white'>{sessionId}</p>
+        <div className='flex flex-col items-start gap-3'>
+          <div className='flex justify-center items-center gap-2'>
+            <UserButton />
+            {fullName}
+          </div>
+          <div className='flex gap-3 items-center text-gray-500'>
+            <p className='text-xs'>{sessionId}</p>
+            <Copy className='size-3 cursor-pointer' />
+          </div>
         </div>
 
         <div>
-          <Button size='sm' variant='solid' className='bg-zinc-500 text-white'>
+          <Button
+            size='sm'
+            variant='solid'
+            className='bg-zinc-500 text-white'
+            onPress={() => setCurrentModel("qwen")}
+          >
             <BotIcon className='size-5 flex items-center' />
-            { currentModel }
+            {currentModel}
           </Button>
         </div>
       </div>

@@ -1,13 +1,15 @@
-import { cn } from "@/lib/utils";
-import { Bot, User } from "lucide-react";
 import React from "react";
+import Markdown from 'react-markdown';
+import {cn} from "@/lib/utils";
+import {Bot, User} from "lucide-react";
+import remarkGfm from 'remark-gfm';
 
 type MessageProps = {
   content: string;
   isUserMessage: boolean;
 };
 
-const Message = ({ content, isUserMessage }: MessageProps) => {
+const Message = ({content, isUserMessage}: MessageProps) => {
   return (
     <div
       className={cn({
@@ -25,16 +27,18 @@ const Message = ({ content, isUserMessage }: MessageProps) => {
               }
             )}
           >
-            {isUserMessage ? <User /> : <Bot />}
+            {isUserMessage ? <User/> : <Bot/>}
           </div>
           <div className='flex flex-col ml-6 w-full'>
             <div className='flex flex-col items-start'>
               <span className='text-sm font-semibold text-white'>
-                {isUserMessage ? "You" : "Website"}
+                {isUserMessage ? "You" : "Bot"}
               </span>
-              <p className='text-sm font-normal py-2.5 text-white text-wrap'>
-                {content}
-              </p>
+              <div className='markdown-content'>
+                <Markdown remarkPlugins={[remarkGfm]}>
+                  {content}
+                </Markdown>
+              </div>
             </div>
           </div>
         </div>

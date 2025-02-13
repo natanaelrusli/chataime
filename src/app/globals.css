@@ -69,10 +69,98 @@ body {
 }
 
 @layer base {
-  * {
+    * {
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+.markdown-content {
+    @apply bg-background text-foreground p-4 rounded-lg;
+    margin-top: 4px;
+}
+
+.markdown-content h1 {
+    @apply text-primary font-bold text-3xl mb-4;
+}
+
+.markdown-content h2 {
+    @apply text-primary font-semibold text-2xl mb-3;
+}
+
+.markdown-content h3 {
+    @apply text-primary font-semibold text-xl mb-2;
+}
+
+.markdown-content h4 {
+    @apply text-primary font-medium text-lg mb-2;
+}
+
+.markdown-content h5 {
+    @apply text-primary font-medium text-base mb-2;
+}
+
+.markdown-content h6 {
+    @apply text-primary font-medium text-sm mb-2;
+}
+
+.markdown-content p {
+    @apply text-muted-foreground text-base leading-relaxed mb-4;
+}
+
+.markdown-content a {
+    @apply text-primary hover:text-primary-light transition-colors duration-300;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    @apply pl-6 mb-4;
+}
+
+.markdown-content li {
+    @apply text-muted-foreground list-inside;
+}
+
+.markdown-content li::marker {
+    @apply text-primary;
+}
+
+.markdown-content blockquote {
+    @apply bg-muted-light border-l-4 border-primary pl-4 italic text-muted-foreground mb-4;
+}
+
+.markdown-content pre {
+    @apply bg-muted-dark text-foreground p-4 rounded-md overflow-x-auto mb-4;
+}
+
+.markdown-content code {
+    @apply bg-muted-dark text-primary p-1 rounded-sm font-mono text-sm;
+}
+
+.markdown-content img {
+    @apply max-w-full h-auto rounded-lg mb-4;
+}
+
+.markdown-content table {
+    @apply min-w-full mb-4;
+}
+
+.markdown-content th,
+.markdown-content td {
+    @apply border border-muted text-muted-foreground p-2 text-left;
+}
+
+.markdown-content th {
+    @apply bg-muted-dark text-primary font-semibold;
+}
+
+.markdown-content tr:nth-child(even) {
+    @apply bg-muted-light;
+}
+
+.markdown-content code {
+    @apply bg-muted-dark text-primary px-1 py-0.5 rounded-sm font-mono;
 }

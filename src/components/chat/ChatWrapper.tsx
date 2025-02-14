@@ -18,14 +18,13 @@ enum Status {
 
 const ChatWrapper = ({
   sessionId,
-  initialMessages,
   fullName,
 }: {
   sessionId: string;
   initialMessages: Message[];
   fullName: string;
 }) => {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>([]); // Initialize with an empty array
   const [input, setInput] = useState<string>("");
   const [currentModel, setCurrentModel] = useState<string>("deepdeek-r1");
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false);
@@ -37,14 +36,16 @@ const ChatWrapper = ({
   };
 
   useEffect(() => {
+    const storedMessages = localStorage.getItem("messages");
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages));
+    }
+  }, []);
+
+  useEffect(() => {
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
       setShowScrollToBottom(entry.isIntersecting ? false : true);
-
-      if (!entry.isIntersecting) {
-        console.log(!entry.isIntersecting);
-        handleScrollToBottom();
-      }
     };
 
     const options = {
@@ -135,6 +136,8 @@ const ChatWrapper = ({
                 role: RoleEnum.Assistant,
                 content: cleanContent(botMessage),
               };
+              localStorage.setItem('messages', JSON.stringify(updatedMessages));
+
               return updatedMessages;
             });
           } catch (err) {

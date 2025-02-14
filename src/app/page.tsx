@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "ChatAIme - Chat",
 };
 
+// How to create the sessionID?
+// Make the sessionID dependant to the email?
+// Then, how do i get the logged in email? or perhaps user ID?
+
 const Page = async () => {
   const user = await currentUser();
 

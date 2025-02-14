@@ -14,13 +14,11 @@ const Messages = ({messages, loading}: MessagesProps) => {
     <div className='relative flex max-h-[calc(100vh-3.5rem-7rem)] flex-1 flex-col overflow-y-auto pb-10 xl:pb-12'>
       {messages.length ? (
         messages.map((message, i) => (
-          <>
             <Message
-              key={i}
+              key={`message-${i}`}
               content={message.content}
               isUserMessage={message.role === "user"}
             />
-          </>
         ))
       ) : (
         <div className='flex-1 flex flex-col items-center justify-center gap-2'>

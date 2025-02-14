@@ -1,0 +1,21 @@
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Guest {
+  id           Int       @id @default(autoincrement())
+  name         String?   @db.VarChar(255)
+  email        String    @unique @db.VarChar(255)
+  chatHistory  Message[] // One-to-many relationship with Message
+}
+
+model Message {
+  id        Int      @id
+  role      String   @db.VarChar(255)
+  content   String   @db.VarChar(1255)
+  userId    Int      // Foreign key to User
+  user      Guest     @relation(fields: [userId], references: [id]) // Relationship to User
+}

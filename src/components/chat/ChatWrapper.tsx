@@ -1,22 +1,26 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
-import Messages from "./Messages";
+import React, { useEffect, useState } from "react";
+import { BotIcon, ChevronDown, Copy } from "lucide-react";
+import Messages from "@/components/chat/Messages";
 import ChatInput from "@/components/ChatInput";
-import {cleanContent} from "@/lib/utils";
-import {Message} from "@/type";
-import {RoleEnum} from "@/types/enums";
-import {Button} from "@heroui/react";
-import {BotIcon, ChevronDown, Copy} from "lucide-react";
-import {UserButton} from "@clerk/nextjs";
+import { cleanContent } from "@/lib/utils";
+import { Message } from "@/type";
+import { RoleEnum } from "@/types/enums";
+import { Button } from "@heroui/react";
+import { UserButton } from "@clerk/nextjs";
 
 enum Status {
-  Idle = 'idle',
-  Loading = 'loading',
-  Error = 'error',
+  Idle = "idle",
+  Loading = "loading",
+  Error = "error",
 }
 
-const ChatWrapper = ({sessionId, initialMessages, fullName}: {
+const ChatWrapper = ({
+  sessionId,
+  initialMessages,
+  fullName,
+}: {
   sessionId: string;
   initialMessages: Message[];
   fullName: string;
@@ -27,23 +31,28 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
   const [showScrollToBottom, setShowScrollToBottom] = useState<boolean>(false);
   const [status, setStatus] = useState<Status>(Status.Idle);
 
-  const options = {
-    root: document.querySelector("#scrollArea"),
-    rootMargin: "0px",
-    threshold: 1.0,
-  };
-
-  const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-    const [entry] = entries;
-    setShowScrollToBottom((entry.isIntersecting ? false : true))
-  }
-
   const handleScrollToBottom = () => {
     const element = document.getElementById("messages-bottom");
     if (element) element.scrollIntoView();
-  }
+  };
 
   useEffect(() => {
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      setShowScrollToBottom(entry.isIntersecting ? false : true);
+
+      if (!entry.isIntersecting) {
+        console.log(!entry.isIntersecting);
+        handleScrollToBottom();
+      }
+    };
+
+    const options = {
+      root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+
     const observer = new IntersectionObserver(handleIntersection, options);
     const target = document.querySelector("#messages-bottom");
 
@@ -63,13 +72,15 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
   const handleSubmit = async () => {
     if (!input) return;
 
-    const newMessage: Message = {role: "user", content: input};
+    const newMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
 
+    handleScrollToBottom();
+
     try {
-      setStatus(Status.Loading)
-      
+      setStatus(Status.Loading);
+
       const res = await fetch("http://localhost:9090/api/chat", {
         method: "POST",
         headers: {
@@ -82,7 +93,7 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
         }),
       });
 
-      setStatus(Status.Idle)
+      setStatus(Status.Idle);
 
       if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
       if (!res.body) throw new Error("No response body received.");
@@ -93,16 +104,16 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
 
       setMessages((prev) => [
         ...prev,
-        {role: RoleEnum.Assistant, content: ""},
+        { role: RoleEnum.Assistant, content: "" },
       ]);
 
       let buffer = "";
 
       while (true) {
-        const {value, done} = await reader.read();
+        const { value, done } = await reader.read();
         if (done) break;
 
-        buffer += decoder.decode(value, {stream: true});
+        buffer += decoder.decode(value, { stream: true });
 
         // Process each full line (NDJSON format)
         // NDJSON = Newline Delimited JSON
@@ -135,7 +146,7 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
       setStatus(Status.Error);
       console.error("Failed to send message:", error);
     } finally {
-      setStatus(Status.Idle)
+      setStatus(Status.Idle);
     }
   };
 
@@ -145,12 +156,12 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
       <div className='w-full py-4 px-14 flex items-center justify-between font-bold h-full mt-1'>
         <div className='flex flex-col items-start gap-3'>
           <div className='flex justify-center items-center gap-2'>
-            <UserButton/>
+            <UserButton />
             {fullName}
           </div>
           <div className='flex gap-3 items-center text-gray-500'>
             <p className='text-xs'>{sessionId}</p>
-            <Copy className='size-3 cursor-pointer'/>
+            <Copy className='size-3 cursor-pointer' />
           </div>
         </div>
 
@@ -161,7 +172,7 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
             className='bg-zinc-500 text-white'
             onPress={() => setCurrentModel("qwen")}
           >
-            <BotIcon className='size-5 flex items-center'/>
+            <BotIcon className='size-5 flex items-center' />
             {currentModel}
           </Button>
         </div>
@@ -169,17 +180,15 @@ const ChatWrapper = ({sessionId, initialMessages, fullName}: {
       {/* Header end */}
 
       <div className='relative flex-1 text-white bg-zinc-800 justify-between flex flex-col'>
-        <Messages loading={status === Status.Loading} messages={messages}/>
-        {
-          showScrollToBottom && (
-            <Button
-              className='w-fit bg-muted text-white relative bottom-[140px] mx-auto'
-              onPress={handleScrollToBottom}
-            >
-              Scroll to Bottom <ChevronDown/>
-            </Button>
-          )
-        }
+        <Messages loading={status === Status.Loading} messages={messages} />
+        {showScrollToBottom && (
+          <Button
+            className='w-fit bg-muted text-white relative bottom-[140px] mx-auto'
+            onPress={handleScrollToBottom}
+          >
+            Scroll to Bottom <ChevronDown />
+          </Button>
+        )}
       </div>
 
       <ChatInput

@@ -31,7 +31,7 @@ const Messages = ({messages, loading}: MessagesProps) => {
           </p>
         </div>
       )}
-      {loading && <Spinner/>}
+      {loading && <Spinner color="default" label="Thinking..." labelColor="foreground"/>}
       <div id='messages-bottom'/>
     </div>
   );
